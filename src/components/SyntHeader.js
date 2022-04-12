@@ -31,7 +31,7 @@ const SyntHeader = (props) => {
                 </fieldset>
                 <fieldset>
                     <legend>Osc 2</legend>
-                    <FormWaveSelect id={"osc2_waveforms"} value={props.synthParams.osc1WaveForm} name={"osc2WaveForm"} onChangeSelect={changeValue} />
+                    <FormWaveSelect id={"osc2_waveforms"} value={props.synthParams.osc2WaveForm} name={"osc2WaveForm"} onChangeSelect={changeValue} />
                     <FormInput label={frequencyLabelOsc2} id={"osc2_frequency"} name={"freqOsc2"} min={"220"} max={"880"} value={props.synthParams.freqOsc2} onChangeInput={changeValue} />
                 </fieldset>
                 <fieldset>
