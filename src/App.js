@@ -1,8 +1,8 @@
 import React from 'react';
-import Keys from './components/Keys';
-import SyntHeader from './components/SyntHeader';
+import SyntHeader  from './components/SyntHeader';
+import Keys  from './components/Keys';
 import ToggleButton from './components/ToggleButton';
-import Synthetizer from './synth';
+import Synthetizer from './synthesizer/synth';
 import themes from './ThemeStyles'
 import './App.css';
 

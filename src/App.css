@@ -22,8 +22,6 @@ body {
     background-color: var(--main-bg-color);
 }
 
-
-
 #app {
     user-select: none;
     width: 1130px;
@@ -37,7 +35,6 @@ body {
     border-radius: 10px;
     transition: all .5s ease-out;
 }
-
 
 #app #synth_header {
     display: flex;
