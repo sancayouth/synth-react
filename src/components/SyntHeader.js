@@ -1,6 +1,7 @@
 import React from 'react';
 import FormInput from './FormInput';
 import FormWaveSelect from './FormWaveSelect';
+import Visualizer from './Visualizer';
 
 const SyntHeader = (props) => {
     const [frequencyLabelOsc1, setFrequencyLabelOsc1] = React.useState(`Freq. ${props.synthParams.freqOsc1}Hz`);
@@ -46,9 +47,7 @@ const SyntHeader = (props) => {
                     <FormInput label={"Release"} id={"release"} name={"release"} min={"0"} max={"1"} value={props.synthParams.release} onChangeInput={changeValue} />
                 </fieldset>
             </div>
-            <div id="display">
-                <canvas ref={props.canvasRef} />
-            </div>
+            <Visualizer canvasRef={props.canvasRef} />
         </section>
     );
 }
