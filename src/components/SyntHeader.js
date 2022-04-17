@@ -1,14 +1,14 @@
-import React from 'react';
+import { useState } from 'react';
 import FormInput from './FormInput';
 import FormWaveSelect from './FormWaveSelect';
 import Visualizer from './Visualizer';
 
-const SyntHeader = (props) => {
-    const [frequencyLabelOsc1, setFrequencyLabelOsc1] = React.useState(`Freq. ${props.synthParams.freqOsc1}Hz`);
-    const [frequencyLabelOsc2, setFrequencyLabelOsc2] = React.useState(`Freq. ${props.synthParams.freqOsc2}Hz`);
-    const [frequencyTremolo, setFrequencyTremolo] = React.useState(`Freq. ${props.synthParams.freqTremolo}Hz`);
+const SyntHeader = props => {
+    const [frequencyLabelOsc1, setFrequencyLabelOsc1] = useState(`Freq. ${props.synthParams.freqOsc1}Hz`);
+    const [frequencyLabelOsc2, setFrequencyLabelOsc2] = useState(`Freq. ${props.synthParams.freqOsc2}Hz`);
+    const [frequencyTremolo, setFrequencyTremolo] = useState(`Freq. ${props.synthParams.freqTremolo}Hz`);
 
-    function changeValue(ev) {
+    const changeValue = ev => {
         props.changeParams({ [ev.target.name]: ev.target.value });
         if (ev.target.name === 'freqOsc1')
             setFrequencyLabelOsc1(`Freq. ${ev.target.value}Hz`);
@@ -20,7 +20,7 @@ const SyntHeader = (props) => {
 
     return (
         <section id="synth_header">
-            <div id="osciladores">
+            <div id="oscillators">
                 <fieldset>
                     <legend>Volume</legend>
                     <FormInput label={"Volume"} id={"volume"} name={"volume"} min={"0"} max={"1"} value={props.synthParams.volume} onChangeInput={changeValue} />

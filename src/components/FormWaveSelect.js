@@ -1,5 +1,5 @@
 
-const FormWaveSelect = (props) => {
+const FormWaveSelect = props => {
     return (
         <div className="form-container">
             <label>Waveforms</label>

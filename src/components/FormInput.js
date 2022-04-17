@@ -1,5 +1,5 @@
 
-const FormInput = (props) => {
+const FormInput = props => {
     return (
         <div className="form-container">
             <label>{props.label}</label>
@@ -7,6 +7,5 @@ const FormInput = (props) => {
         </div>
     );
 }
-
 
 export default FormInput;
