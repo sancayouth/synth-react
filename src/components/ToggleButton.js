@@ -1,11 +1,10 @@
-const ToggleButton = (props) => {
-    function toogleToDarkTheme() {
-        props.toggleToDarkTheme();
-    }
+const ToggleButton = props => {
+    const toogleToDarkTheme = () => props.toggleToDarkTheme();
+
     return (
-        <div className='ToggleButton'>
+        <div className="toggle_button">
             <input type="checkbox" className="checkbox" onClick={toogleToDarkTheme} />
-            <label className="label" label="chk">
+            <label className="label">
                 <div className="ball"></div>
             </label>
         </div>)

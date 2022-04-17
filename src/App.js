@@ -1,6 +1,6 @@
-import React from 'react';
-import SyntHeader  from './components/SyntHeader';
-import Keys  from './components/Keys';
+import { useState, useRef, useEffect } from 'react';
+import SyntHeader from './components/SyntHeader';
+import Keys from './components/Keys';
 import ToggleButton from './components/ToggleButton';
 import Synthetizer from './synthesizer/synth';
 import themes from './ThemeStyles'
@@ -10,12 +10,12 @@ const audioCtx = new AudioContext()
 const synth = new Synthetizer(audioCtx);
 
 const App = () => {
-  const [syntParams, setSynthParams] = React.useState({
+  const [syntParams, setSynthParams] = useState({
     volume: 0.2,
     freqOsc1: 220.00,
-    osc1WaveForm: "sine",
+    osc1WaveForm: 'sine',
     freqOsc2: 220.00,
-    osc2WaveForm: "square",
+    osc2WaveForm: 'square',
     freqTremolo: 0,
     attack: 0,
     decay: 0,
@@ -23,14 +23,14 @@ const App = () => {
     release: 0,
   });
 
-  const [darkTheme, setDarkTheme] = React.useState(false);
-  const canvasRef = React.useRef(null);
+  const [darkTheme, setDarkTheme] = useState(false);
+  const canvasRef = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     synth.setCanvas(canvasRef.current);
   }, []);
 
-  function onPlayNote(note) {
+  const onPlayNote = note => {
     const key = note;
     synth
       .setEnvelope({ attack: parseFloat(syntParams.attack), decay: parseFloat(syntParams.decay), sustain: parseFloat(syntParams.sustain), release: parseFloat(syntParams.release) })
@@ -48,11 +48,9 @@ const App = () => {
       .play(key);
   }
 
-  function stop() {
-    synth.stop();
-  };
+  const stop = () => synth.stop();
 
-  function onChangeParams(params) {
+  const onChangeParams = (params) => {
     const key = Object.keys(params)[0];
     setSynthParams(prevParams => {
       return {
@@ -62,13 +60,13 @@ const App = () => {
     });
   }
 
-  function toggleToDarkTheme() {
+  const toggleToDarkTheme = () => {
     setDarkTheme(prevState => {
       let actualTheme = ((prevState) ? themes.baseTheme : themes.darkTheme);
       for (const key of Object.keys(actualTheme))
         document.documentElement.style.setProperty(key, actualTheme[key]);
-      
-      synth.setThemeColor((prevState)? "#8fa3ff": "#a5ff8f");
+
+      synth.setThemeColor((prevState) ? "#8fa3ff" : "#a5ff8f");
       return !prevState
     });
 
@@ -77,7 +75,7 @@ const App = () => {
   return (
     <div id="app" className={(darkTheme) ? "darkTheme" : ""}>
       <ToggleButton toggleToDarkTheme={toggleToDarkTheme} />
-      <SyntHeader synthParams={syntParams} changeParams={onChangeParams} canvasRef={canvasRef}/>
+      <SyntHeader synthParams={syntParams} changeParams={onChangeParams} canvasRef={canvasRef} />
       <Keys playNote={onPlayNote} stopNote={stop} />
     </div>
   );

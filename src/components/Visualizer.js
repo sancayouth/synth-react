@@ -1,4 +1,4 @@
-const Visualizer = (props) => {
+const Visualizer = props => {
     return (
         <div id="display">
             <canvas ref={props.canvasRef} />
@@ -6,4 +6,4 @@ const Visualizer = (props) => {
     );
 }
 
-export default Visualizer
+export default Visualizer;
