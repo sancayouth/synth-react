@@ -4,7 +4,7 @@ import Keys from './components/Keys';
 import ToggleButton from './components/ToggleButton';
 import Synthetizer from './synthesizer/synth';
 import themes from './ThemeStyles'
-import './App.css';
+import './styles/App.min.css';
 
 const audioCtx = new AudioContext()
 const synth = new Synthetizer(audioCtx);
