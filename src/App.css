@@ -1,8 +1,8 @@
 :root {
-    --main-bg-color: #ccfff5;
-    --border-color: #8fa3ff;
+    --main-bg-color: #CCFFF5;
+    --border-color: #8FA3FF;
     --text-color: #000;
-    --keyboard-bgcolor: #ccd5ff;
+    --keyboard-bgcolor: #CCD5FF;
     --toggle-button-color: #222;
 }
 
@@ -197,4 +197,3 @@ body {
 .checkbox:checked+.label .ball {
     transform: translateX(22px);
 }
-
