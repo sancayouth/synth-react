@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import SyntHeader from './components/SyntHeader';
 import Keys from './components/Keys';
 import ToggleButton from './components/ToggleButton';
@@ -27,28 +27,11 @@ const App = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    synth.setCanvas(canvasRef.current);
-  }, []);
+    synth.setCanvas(canvasRef.current).setAllValues(syntParams)
+  }, [syntParams]);
 
-  const onPlayNote = note => {
-    const key = note;
-    synth
-      .setEnvelope({ attack: parseFloat(syntParams.attack), decay: parseFloat(syntParams.decay), sustain: parseFloat(syntParams.sustain), release: parseFloat(syntParams.release) })
-      .setVolume(parseFloat(syntParams.volume))
-      .setTremolo(parseFloat(syntParams.freqTremolo))
-      .setOscValues([
-        {
-          type: syntParams.osc1WaveForm,
-          frequency: parseFloat(syntParams.freqOsc1)
-        },
-        {
-          type: syntParams.osc2WaveForm,
-          frequency: parseFloat(syntParams.freqOsc2)
-        }])
-      .play(key);
-  }
-
-  const stop = () => synth.stop();
+  const onPlayNote = useCallback((note) => synth.play(note), []);
+  const stop = useCallback(() => synth.stop(), []);
 
   const onChangeParams = (params) => {
     const key = Object.keys(params)[0];
@@ -58,7 +41,8 @@ const App = () => {
         [key]: params[key]
       }
     });
-  }
+    synth.setAllValues(syntParams);
+  };
 
   const toggleToDarkTheme = () => {
     setDarkTheme(prevState => {
@@ -69,14 +53,13 @@ const App = () => {
       synth.setThemeColor((prevState) ? "#8fa3ff" : "#a5ff8f");
       return !prevState
     });
-
   }
 
   return (
     <div id="app" className={(darkTheme) ? "darkTheme" : ""}>
       <ToggleButton toggleToDarkTheme={toggleToDarkTheme} />
       <SyntHeader synthParams={syntParams} changeParams={onChangeParams} canvasRef={canvasRef} />
-      <Keys playNote={onPlayNote} stopNote={stop} />
+      <Keys enter={onPlayNote} leave={stop} />
     </div>
   );
 }

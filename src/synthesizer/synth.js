@@ -1,6 +1,6 @@
 import { WaveFormVisualizer } from "./waveFormVisualizer";
 export default class Synthetizer {
-    constructor(audioContext, canvas) {
+    constructor(audioContext) {
         this.osciladores = [];
         this.patchParams = [];
         this.volume = 0.2;
@@ -38,7 +38,7 @@ export default class Synthetizer {
         let gain = this.audioCtx.createGain();
         gain.gain.value = this.volume;
 
-        this.osciladores = this.patchParams.map((opt) => {
+        this.osciladores = this.patchParams.map(opt => {
             let osc = this.audioCtx.createOscillator();
             osc.type = opt.type;
             osc.frequency.value = opt.frequency;
@@ -61,16 +61,15 @@ export default class Synthetizer {
         const release = now + this.envelopeParams.release;
         this.envelope.gain.cancelScheduledValues(now);
         this.envelope.gain.setTargetAtTime(0.0, now, this.envelopeParams.release);
-        this.osciladores.forEach((osc) => {
-            osc.stop(release + 1);
-        });
+        this.osciladores.forEach((osc) => osc.stop(release + 1));
     }
     setCanvas(canvas) {
         this.visualizer = new WaveFormVisualizer(canvas, this);
+        return this;
     }
     setThemeColor(color) {
         if (this.visualizer)
-            this.visualizer.setColor(color); 
+            this.visualizer.setColor(color);
     }
     setOscValues(values) {
         this.patchParams = values;
@@ -86,6 +85,21 @@ export default class Synthetizer {
     }
     setTremolo(value) {
         this.tremoloFrequency = value;
+        return this;
+    }
+    setAllValues(syntParams) {
+        this.setOscValues([
+        {
+          type: syntParams.osc1WaveForm,
+          frequency: parseFloat(syntParams.freqOsc1)
+        },
+        {
+          type: syntParams.osc2WaveForm,
+          frequency: parseFloat(syntParams.freqOsc2)
+        }])
+        this.setEnvelope({ attack: parseFloat(syntParams.attack), decay: parseFloat(syntParams.decay), sustain: parseFloat(syntParams.sustain), release: parseFloat(syntParams.release) });
+        this.setVolume(syntParams.volume);
+        this.setTremolo(syntParams.freqTremolo);
         return this;
     }
 }
