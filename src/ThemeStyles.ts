@@ -1,4 +1,4 @@
-const themes = {
+export const themes: Record<string, Record<string, string>> = {
     baseTheme: {
         "--main-bg-color": "#ccfff5",
         "--border-color": "#8fa3ff",
@@ -13,6 +13,4 @@ const themes = {
         "--keyboard-bgcolor": "#222",
         "--toggle-button-color": "#ccd5ff"
     }
-}
-
-export default themes;
+};

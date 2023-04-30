@@ -1,5 +1,11 @@
+interface IProps {
+    id: string,
+    value: string,
+    name: string,
+    onChangeSelect: (ev: any) => void
+}
 
-const FormWaveSelect = props => {
+export const FormWaveSelect = (props: IProps) => {
     return (
         <div className="form-container">
             <label>Waveforms</label>
@@ -12,5 +18,3 @@ const FormWaveSelect = props => {
         </div>
     );
 };
-
-export default FormWaveSelect;

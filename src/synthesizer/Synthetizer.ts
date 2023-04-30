@@ -1,6 +1,29 @@
-import { WaveFormVisualizer } from "./waveFormVisualizer";
+import { ISynthParams, IPropsEnvelope } from '../types';
+import { WaveFormVisualizer } from './waveFormVisualizer';
+
+interface IOscValue {
+    type: OscillatorType,
+    frequency: number
+}
+
 export default class Synthetizer {
-    constructor(audioContext) {
+    audioCtx: AudioContext
+    tremolo: GainNode;
+    tremoloFrequency: number;
+    shaper: WaveShaperNode;
+    lfo: OscillatorNode;
+    envelope: GainNode;
+    analyserNode: AnalyserNode;
+    bufferLength: number;
+    volume: number;
+    data: Uint8Array;
+    envelopeParams: IPropsEnvelope;
+    visualizer!: WaveFormVisualizer;
+    osciladores: OscillatorNode[];
+    patchParams: IOscValue[];
+    FFT_SIZE: number = 2048;
+
+    constructor(audioContext: AudioContext) {
         this.osciladores = [];
         this.patchParams = [];
         this.volume = 0.2;
@@ -8,7 +31,7 @@ export default class Synthetizer {
         this.tremoloFrequency = 5;
         this.audioCtx = audioContext;
 
-        this.analyserNode = new AnalyserNode(this.audioCtx, { fftSize: 1024 });
+        this.analyserNode = new AnalyserNode(this.audioCtx, { fftSize: this.FFT_SIZE });
         this.bufferLength = this.analyserNode.frequencyBinCount;
         this.data = new Uint8Array(this.bufferLength);
         this.envelope = this.audioCtx.createGain();
@@ -25,7 +48,8 @@ export default class Synthetizer {
         this.lfo.start(this.audioCtx.currentTime);
         this.lfo.connect(this.shaper);
     }
-    play(keyId) {
+
+    play(keyId: number): Synthetizer {
         this.envelope = this.audioCtx.createGain();
         this.envelope.connect(this.audioCtx.destination);
         this.envelope.gain.value = 0;
@@ -53,53 +77,68 @@ export default class Synthetizer {
         }
         else
             gain.connect(this.envelope).connect(this.analyserNode).connect(this.audioCtx.destination);
+
         this.visualizer.startAnimation();
         return this;
     }
+
     stop() {
         const now = this.audioCtx.currentTime;
         const release = now + this.envelopeParams.release;
         this.envelope.gain.cancelScheduledValues(now);
         this.envelope.gain.setTargetAtTime(0.0, now, this.envelopeParams.release);
-        this.osciladores.forEach((osc) => osc.stop(release + 1));
+        this.osciladores.forEach((osc: OscillatorNode) => osc.stop(release + 1));
+        this.visualizer.stopAnimation();
     }
-    setCanvas(canvas) {
-        this.visualizer = new WaveFormVisualizer(canvas, this);
+
+    setCanvas(canvas: HTMLCanvasElement): Synthetizer {
+        this.visualizer = new WaveFormVisualizer(canvas, this, this.FFT_SIZE);
         return this;
     }
-    setThemeColor(color) {
+
+    setThemeColor(color: string): Synthetizer {
         if (this.visualizer)
             this.visualizer.setColor(color);
+        return this;
     }
-    setOscValues(values) {
+
+    setOscValues(values: IOscValue[]): Synthetizer {
         this.patchParams = values;
         return this;
     }
-    setVolume(volume) {
+
+    setVolume(volume: number): Synthetizer {
         this.volume = volume;
         return this;
     }
-    setEnvelope(values) {
+
+    setEnvelope(values: IPropsEnvelope): Synthetizer {
         this.envelopeParams = values;
         return this;
     }
-    setTremolo(value) {
+
+    setTremolo(value: number): Synthetizer {
         this.tremoloFrequency = value;
         return this;
     }
-    setAllValues(syntParams) {
+
+    setAllValues(syntParams: ISynthParams): Synthetizer {
         this.setOscValues([
-        {
-          type: syntParams.osc1WaveForm,
-          frequency: parseFloat(syntParams.freqOsc1)
-        },
-        {
-          type: syntParams.osc2WaveForm,
-          frequency: parseFloat(syntParams.freqOsc2)
-        }])
-        this.setEnvelope({ attack: parseFloat(syntParams.attack), decay: parseFloat(syntParams.decay), sustain: parseFloat(syntParams.sustain), release: parseFloat(syntParams.release) });
+            {
+                type: syntParams.osc1WaveForm as OscillatorType,
+                frequency: this._valueToFloat(syntParams.freqOsc1)
+            },
+            {
+                type: syntParams.osc2WaveForm as OscillatorType,
+                frequency: this._valueToFloat(syntParams.freqOsc2)
+            }])
+        this.setEnvelope({ attack: this._valueToFloat(syntParams.attack), decay: this._valueToFloat(syntParams.decay), sustain: this._valueToFloat(syntParams.sustain), release: this._valueToFloat(syntParams.release) });
         this.setVolume(syntParams.volume);
         this.setTremolo(syntParams.freqTremolo);
         return this;
     }
+
+    _valueToFloat(value: any): number { return parseFloat(value.toString()) }
 }
+
+
